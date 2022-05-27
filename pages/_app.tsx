@@ -1,12 +1,13 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { ThemeProvider } from "styled-components";
-import { useEffect, useState } from "react";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { useState } from "react";
 import Navigation from "../components/Navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 
 const darkTheme = {
+  mode: "dark",
   primary: "#fff",
   secondary: "#053b56",
   hover: "#2684b4",
@@ -16,6 +17,7 @@ const darkTheme = {
 };
 
 const lightTheme = {
+  mode: "light",
   primary: "#004568",
   secondary: "#f2f2f2",
   hover: "#e3e3e3",
@@ -30,19 +32,22 @@ const topToBottom = {
   exit: { opacity: 0, x: 0, y: "100vh" },
 };
 
+type ThemeType = typeof lightTheme;
+export type { ThemeType };
+
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [darkState, setDarkState] = useState(false);
-  const [theme, setTheme] = useState({});
   const router = useRouter();
 
-  useEffect(() => {
-    darkState ? setTheme({ ...darkTheme }) : setTheme({ ...lightTheme });
-    document.body.style.backgroundColor = darkState ? darkTheme.secondary : lightTheme.secondary;
-  }, [darkState]);
-
   return (
-    <ThemeProvider theme={theme}>
-      <Navigation isDark={darkState} handleSwitch={() => setDarkState(!darkState)} />
+    <ThemeProvider theme={darkState ? darkTheme : lightTheme}>
+      <Navigation
+        isDark={darkState}
+        handleSwitch={() => {
+          document.body.style.backgroundColor = !darkState ? darkTheme.secondary : lightTheme.secondary;
+          setDarkState(!darkState);
+        }}
+      />
       <AnimatePresence exitBeforeEnter>
         <motion.main
           key={router.route}

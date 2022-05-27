@@ -140,20 +140,13 @@ const NavButtons = styled.a<{ active: boolean }>`
 `;
 
 const darkToggle = keyframes`
-  0%{ right: 17px;  top: 10px; }
-  25%{ right: 13px; top: 0px;}
-  50%{ right: 7px; top: -3px;}
-  75%{ right: 2px; top: -2px;} 
-  100% { right: -3px; top: 1px;}
+  from {transform: rotateZ(180deg)}
+  to {transform: rotateZ(360deg)}
 `;
 
 const lightToggle = keyframes`
-  0%{ left: 15px;  bottom: 9px; }
-  20%{ left: 14px; bottom: 2px;}
-  40%{ left: 10px; bottom: -2px;}
-  60%{ left: 7px; bottom: -4px;}
-  80%{ left: 1px; bottom: -3px;} 
-  100% { left: -3px; bottom: 0px;}
+  from {transform: rotateZ(180deg)}
+  to {transform: rotateZ(0deg)}
 `;
 
 const Toggle = styled.button<{ desktop: Boolean; isDark: Boolean }>`
@@ -166,8 +159,11 @@ const Toggle = styled.button<{ desktop: Boolean; isDark: Boolean }>`
   padding: 0;
   cursor: pointer;
   display: ${({ desktop }) => (desktop ? "block" : "none")};
-
+  animation-name: ${({ isDark }: { isDark: Boolean }) => (isDark ? lightToggle : darkToggle)};
+  animation-duration: 1s;
+  animation-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55);
   transform: scale(1.2);
+
   @media (min-width: 769px) {
     margin: auto 5px auto 1rem;
   }
@@ -181,15 +177,12 @@ const Toggle = styled.button<{ desktop: Boolean; isDark: Boolean }>`
     display: ${({ isDark }: { isDark: Boolean }) => (isDark ? "block" : "none")};
     content: "";
     position: absolute;
-    height: 8px;
-    width: 8px;
-    border: 1px solid ${({ theme }) => theme.primary};
-    background-color: ${({ theme }) => theme.secondary};
+    height: 9px;
+    width: 9px;
+    background-color: ${({ theme }) => theme.primary};
     border-radius: 50%;
     left: -3px;
     bottom: 0px;
-    animation-name: ${lightToggle};
-    animation-duration: 0.3s;
   }
   &::after {
     display: ${({ isDark }: { isDark: Boolean }) => (isDark ? "none" : "block")};
@@ -201,9 +194,6 @@ const Toggle = styled.button<{ desktop: Boolean; isDark: Boolean }>`
     border-radius: 50%;
     right: -3px;
     top: 1px;
-
-    animation-name: ${darkToggle};
-    animation-duration: 0.3s;
   }
 `;
 
